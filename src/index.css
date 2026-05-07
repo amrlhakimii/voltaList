@@ -27,3 +27,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Splash screen keyframes ──────────────────────────── */
+@keyframes splash-from-left {
+  from { transform: translateX(-110vw); }
+  to   { transform: translateX(0); }
+}
+@keyframes splash-from-right {
+  from { transform: translateX(110vw); }
+  to   { transform: translateX(0); }
+}
+@keyframes splash-from-bottom {
+  from { transform: translateY(90px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes splash-jiggle {
+  0%   { transform: scale(1)    rotate(0deg);    }
+  15%  { transform: scale(1.07) rotate(-2deg);   }
+  30%  { transform: scale(0.94) rotate(2.5deg);  }
+  45%  { transform: scale(1.04) rotate(-1.5deg); }
+  60%  { transform: scale(0.97) rotate(1deg);    }
+  78%  { transform: scale(1.02) rotate(-0.4deg); }
+  100% { transform: scale(1)    rotate(0deg);    }
+}
+@keyframes splash-glow {
+  0%, 100% { opacity: 0.12; transform: scale(1);    }
+  50%       { opacity: 0.22; transform: scale(1.08); }
+}
+@keyframes splash-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
