@@ -96,7 +96,7 @@ export function SessionPage() {
     ]
     if (sorted.length > 0) {
       parts.push('', 'Scorers:')
-      sorted.forEach(s => parts.push(`  ${s.name} - ${s.goals} goal${s.goals !== 1 ? 's' : ''}`))
+      sorted.forEach(s => parts.push(`${s.name} - ${s.goals} goal${s.goals !== 1 ? 's' : ''}`))
     }
     if (mvps.length > 0) {
       parts.push('', `MVP: *${mvps.map(m => m.name).join(', ')}*`)
