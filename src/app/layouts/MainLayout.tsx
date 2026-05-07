@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Zap, LayoutDashboard, List } from 'lucide-react'
+import { Zap, LayoutDashboard } from 'lucide-react'
 import { AuthButton } from '../../components/auth/AuthButton'
 import { useCaptain } from '../../hooks/useCaptain'
 import { useAuth } from '../../hooks/useAuth'
@@ -25,15 +25,6 @@ export function MainLayout() {
               </span>
             </Link>
             <div className="flex items-center gap-1">
-              {user && (
-                <Link
-                  to="/sessions"
-                  className="flex items-center gap-1.5 text-xs text-[#F6E9E9]/50 hover:text-[#F6E9E9] transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
-                >
-                  <List size={13} />
-                  Sessions
-                </Link>
-              )}
               {isCaptain && (
                 <Link
                   to="/admin"
