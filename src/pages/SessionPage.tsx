@@ -62,12 +62,12 @@ export function SessionPage() {
   const showForm = !!user && (isCaptain || (!quotaReached && session.isOpen && !isFull))
 
   return (
-    <div className="px-4 py-4 space-y-3">
+    <div className="px-4 py-4 space-y-2.5">
       <Card>
         {isCaptain && (
           <CaptainToolbar isOpen={session.isOpen} onToggle={() => void handleToggle()} />
         )}
-        <SessionHeader session={session} entryCount={entries.length} />
+        <SessionHeader session={session} entries={entries} />
       </Card>
 
       <Card>
@@ -81,9 +81,9 @@ export function SessionPage() {
       </Card>
 
       {!user ? (
-        <Card className="p-4">
-          <p className="text-[#F6E9E9]/50 text-sm mb-3 text-center">
-            Sign in to join the session
+        <Card className="p-5 text-center">
+          <p className="text-[#F6E9E9]/60 text-sm font-medium mb-3">
+            Sign in to join this session
           </p>
           <div className="flex justify-center">
             <AuthButton />
@@ -101,13 +101,13 @@ export function SessionPage() {
           />
         </Card>
       ) : (
-        <Card className="p-4">
-          <p className="text-[#F6E9E9]/35 text-sm text-center">
+        <Card className="px-4 py-3.5">
+          <p className="text-[#F6E9E9]/30 text-sm text-center">
             {!session.isOpen
-              ? 'Registration is closed'
+              ? '🔒 Registration is closed'
               : isFull
-                ? 'Session is full'
-                : 'You have reached your 2-entry limit'}
+                ? '⚡ Session is full'
+                : '✓ You have reached your entry limit'}
           </p>
         </Card>
       )}

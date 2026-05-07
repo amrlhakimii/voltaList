@@ -19,9 +19,9 @@ html {
 
 body {
   margin: 0;
-  background-color: #272121;
+  background-color: #1a1717;
   color: #F6E9E9;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

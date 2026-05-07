@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 import { useCaptain } from '../../hooks/useCaptain'
 import { useSessions } from '../../hooks/useSession'
 import { useEntries } from '../../hooks/useEntries'
@@ -25,7 +26,7 @@ export function AdminDashboard() {
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-[#F6E9E9]">Sessions</h2>
         <Link to="/admin/session/new">
-          <Button size="sm">+ New</Button>
+          <Button size="sm"><Plus size={14} /> New Session</Button>
         </Link>
       </div>
 

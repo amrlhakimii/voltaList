@@ -29,10 +29,11 @@ export function EntryList({ entries, maxSpots, userUid, isCaptain, onRemove }: E
           key={`empty-${i}`}
           className="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-0"
         >
-          <span className="text-sm font-bold text-white/15 w-6 shrink-0 tabular-nums">
+          <span className="text-xs font-bold text-white/10 w-5 shrink-0 tabular-nums text-right">
             {entries.length + i + 1}
           </span>
-          <span className="text-[#F6E9E9]/15 text-sm">—</span>
+          <div className="w-8 h-8 rounded-full shrink-0 border border-dashed border-white/10" />
+          <span className="text-[#F6E9E9]/15 text-sm">Open slot</span>
         </div>
       ))}
     </div>
