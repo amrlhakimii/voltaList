@@ -83,15 +83,16 @@ export function SessionPage() {
   function handleWhatsApp() {
     if (!session) return
     const lines = [
-      'VoltaList',
+      '⚡ *VoltaList*',
       '',
-      session.title,
-      'Date: ' + formatDate(session.date),
-      'Time: ' + session.timeStart + ' - ' + session.timeEnd,
-      'Venue: ' + session.venue,
+      `*${session.title}*`,
+      session.opponent ? `⚔️ vs ${session.opponent}` : '',
+      `📅 ${formatDate(session.date)}`,
+      `🕐 ${session.timeStart} - ${session.timeEnd}`,
+      `📍 ${session.venue}`,
       '',
-      'Sign up: ' + window.location.href,
-    ]
+      `🔗 Sign up: ${window.location.href}`,
+    ].filter(l => l !== '')
     window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank')
   }
 
