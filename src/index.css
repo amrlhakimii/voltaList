@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-volta-dark: #272121;
-  --color-volta-surface: #363333;
+  --color-volta-dark: #1a1717;
+  --color-volta-surface: #2c2929;
   --color-volta-orange: #E16428;
   --color-volta-cream: #F6E9E9;
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 *,
