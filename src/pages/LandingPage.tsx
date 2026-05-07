@@ -28,7 +28,7 @@ export function LandingPage() {
           <div className="w-8 h-8 rounded-xl bg-[#E16428] flex items-center justify-center shadow-lg shadow-[#E16428]/40">
             <Zap size={16} className="text-white fill-white" />
           </div>
-          <span className="font-extrabold text-[#F6E9E9] text-lg tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <span className="font-extrabold text-[#F6E9E9] text-lg tracking-tight" style={{ fontFamily: 'Raleway, sans-serif' }}>
             Volta<span className="text-[#E16428]">List</span>
           </span>
         </div>

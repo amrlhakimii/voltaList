@@ -14,7 +14,7 @@ export function MainLayout() {
             <div className="w-7 h-7 rounded-lg bg-[#E16428] flex items-center justify-center shadow-lg shadow-[#E16428]/30">
               <Zap size={14} className="text-white fill-white" />
             </div>
-            <span className="font-extrabold text-[#F6E9E9] text-base tracking-tight">
+            <span className="font-extrabold text-[#F6E9E9] text-base tracking-tight" style={{ fontFamily: 'Raleway, sans-serif' }}>
               Volta<span className="text-[#E16428]">List</span>
             </span>
           </Link>
