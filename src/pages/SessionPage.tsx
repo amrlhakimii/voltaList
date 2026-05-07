@@ -80,6 +80,31 @@ export function SessionPage() {
     })
   }
 
+  function handleShareScore() {
+    if (!session?.result) return
+    const { homeScore, awayScore, scorers } = session.result
+    const outcome = homeScore > awayScore ? 'WIN' : homeScore < awayScore ? 'LOSS' : 'DRAW'
+    const maxGoals = scorers.length > 0 ? Math.max(...scorers.map(s => s.goals)) : 0
+    const mvps = scorers.filter(s => s.goals === maxGoals && maxGoals > 0)
+    const sorted = [...scorers].sort((a, b) => b.goals - a.goals)
+
+    const parts: string[] = [
+      `*${session.title} - Full Time*`,
+      ...(session.opponent ? [`vs ${session.opponent}`] : []),
+      '',
+      `*${homeScore} - ${awayScore}* (${outcome})`,
+    ]
+    if (sorted.length > 0) {
+      parts.push('', 'Scorers:')
+      sorted.forEach(s => parts.push(`  ${s.name} - ${s.goals} goal${s.goals !== 1 ? 's' : ''}`))
+    }
+    if (mvps.length > 0) {
+      parts.push('', `MVP: *${mvps.map(m => m.name).join(', ')}*`)
+    }
+
+    window.open('https://wa.me/?text=' + encodeURIComponent(parts.join('\n')), '_blank')
+  }
+
   function handleWhatsApp() {
     if (!session) return
     const lines = [
@@ -134,6 +159,17 @@ export function SessionPage() {
       {session.result && (
         <Card>
           <MatchResultCard result={session.result} opponent={session.opponent} />
+          {isCaptain && (
+            <div className="px-4 pb-4">
+              <button
+                onClick={() => handleShareScore()}
+                className="w-full flex items-center justify-center gap-2 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/15 border border-[#25D366]/20 py-2 rounded-xl transition-colors"
+              >
+                <WhatsAppIcon />
+                Share score on WhatsApp
+              </button>
+            </div>
+          )}
         </Card>
       )}
 
