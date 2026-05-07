@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-volta-dark: #272121;
+  --color-volta-surface: #363333;
+  --color-volta-orange: #E16428;
+  --color-volta-cream: #F6E9E9;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background-color: #272121;
+  color: #F6E9E9;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

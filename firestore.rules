@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isCaptain() {
+      return request.auth != null && request.auth.uid == "REPLACE_WITH_CAPTAIN_UID";
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow create: if isCaptain();
+      allow update: if isCaptain();
+      allow delete: if isCaptain();
+
+      match /entries/{entryId} {
+        allow read: if true;
+
+        allow create: if isSignedIn()
+          && request.resource.data.addedByUid == request.auth.uid
+          && (
+            isCaptain()
+            || (
+              get(/databases/$(database)/documents/sessions/$(sessionId)).data.isOpen == true
+              && (
+                select(get(/databases/$(database)/documents/sessions/$(sessionId)).data.maxSpots)
+                > query(/databases/$(database)/documents/sessions/$(sessionId)/entries
+                    where []).size()
+              )
+            )
+          );
+
+        allow delete: if isSignedIn()
+          && (
+            isCaptain()
+            || resource.data.addedByUid == request.auth.uid
+          );
+      }
+    }
+  }
+}
