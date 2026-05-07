@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { CalendarDays, MapPin, Clock, Swords, Users, Shield, Share2, Check, Timer } from 'lucide-react'
+import { CalendarDays, MapPin, Clock, Swords, Users, Shield, Timer } from 'lucide-react'
 import type { Session } from '../../types/session'
 import type { Entry } from '../../types/entry'
 import { formatDate } from '../../utils/date'
@@ -12,20 +11,12 @@ interface SessionHeaderProps {
 }
 
 export function SessionHeader({ session, entries }: SessionHeaderProps) {
-  const [copied, setCopied] = useState(false)
   const entryCount = entries.length
   const isFull = entryCount >= session.maxSpots
   const pct = Math.min(100, (entryCount / session.maxSpots) * 100)
   const gkCount = entries.filter(e => e.isGK).length
   const fieldCount = entryCount - gkCount
   const countdown = getCountdown(session.date, session.timeStart)
-
-  function handleShare() {
-    void navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
 
   return (
     <div className="px-4 pt-5 pb-4">
@@ -37,16 +28,7 @@ export function SessionHeader({ session, entries }: SessionHeaderProps) {
         >
           {session.title}
         </h1>
-        <div className="flex items-center gap-2 shrink-0">
-          <SessionStatusBadge isOpen={session.isOpen} isFull={isFull} />
-          <button
-            onClick={handleShare}
-            title="Copy session link"
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-[#F6E9E9]/30 hover:text-[#F6E9E9]/70 hover:bg-white/8 transition-colors"
-          >
-            {copied ? <Check size={14} className="text-emerald-400" /> : <Share2 size={14} />}
-          </button>
-        </div>
+        <SessionStatusBadge isOpen={session.isOpen} isFull={isFull} />
       </div>
 
       {/* Countdown */}

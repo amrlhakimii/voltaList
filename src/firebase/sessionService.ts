@@ -10,7 +10,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { db } from './firestore'
-import type { Session } from '../types/session'
+import type { Session, MatchResult } from '../types/session'
 
 export function subscribeToSessions(
   callback: (sessions: Session[]) => void,
@@ -60,6 +60,10 @@ export async function createSession(
 
 export async function toggleSession(sessionId: string, isOpen: boolean): Promise<void> {
   await updateDoc(doc(db, 'sessions', sessionId), { isOpen })
+}
+
+export async function setResult(sessionId: string, result: MatchResult): Promise<void> {
+  await updateDoc(doc(db, 'sessions', sessionId), { result })
 }
 
 export { Timestamp }

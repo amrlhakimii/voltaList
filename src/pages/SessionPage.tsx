@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Share2, Check } from 'lucide-react'
 import { useSession } from '../hooks/useSession'
 import { useEntries } from '../hooks/useEntries'
 import { useAuth } from '../hooks/useAuth'
@@ -9,12 +10,14 @@ import { useGKStatus } from '../hooks/useGKStatus'
 import { SessionHeader } from '../components/session/SessionHeader'
 import { EntryList } from '../components/session/EntryList'
 import { AddEntryForm } from '../components/session/AddEntryForm'
+import { ResultForm } from '../components/session/ResultForm'
+import { MatchResultCard } from '../components/session/MatchResultCard'
 import { CaptainToolbar } from '../components/admin/CaptainToolbar'
 import { AuthButton } from '../components/auth/AuthButton'
 import { Card } from '../components/ui/Card'
 import { Spinner } from '../components/ui/Spinner'
 import { addEntry, removeEntry } from '../firebase/entryService'
-import { toggleSession } from '../firebase/sessionService'
+import { toggleSession, setResult } from '../firebase/sessionService'
 import { NotFoundPage } from './NotFoundPage'
 import { formatDate } from '../utils/date'
 
@@ -34,7 +37,7 @@ export function SessionPage() {
   const { isCaptain } = useCaptain()
   const { count: quotaCount, reached: quotaReached } = useQuota(entries)
   const { gkTaken } = useGKStatus(entries)
-  const [whatsappToast, setWhatsappToast] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   if (sessionLoading || entriesLoading) {
     return (
@@ -70,50 +73,84 @@ export function SessionPage() {
     await toggleSession(session.id, !session.isOpen)
   }
 
+  function handleCopyLink() {
+    void navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   function handleWhatsApp() {
     if (!session) return
     const gkEntry = entries.find(e => e.isGK)
-    const text = [
-      `⚡ *${session.title}*`,
-      `📅 ${formatDate(session.date)} | 🕐 ${session.timeStart} – ${session.timeEnd}`,
-      `📍 ${session.venue}`,
-      `👥 ${entries.length}/${session.maxSpots} players${gkEntry ? ` · 🧤 GK: ${gkEntry.playerName}` : ''}`,
-      ``,
-      `🔗 ${window.location.href}`,
-    ].join('\n')
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
-    setWhatsappToast(true)
-    setTimeout(() => setWhatsappToast(false), 2500)
+    const lines = [
+      'VoltaList',
+      '',
+      session.title,
+      'Date: ' + formatDate(session.date),
+      'Time: ' + session.timeStart + ' - ' + session.timeEnd,
+      'Venue: ' + session.venue,
+      'Players: ' + entries.length + '/' + session.maxSpots,
+      gkEntry ? 'GK: ' + gkEntry.playerName : '',
+      '',
+      'Sign up: ' + window.location.href,
+    ].filter(l => l !== null)
+    window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank')
   }
 
   const showForm = !!user && (isCaptain || (!quotaReached && session.isOpen && !isFull))
 
   return (
-    <div className="px-4 py-4 space-y-2.5 relative">
-      {/* WhatsApp toast */}
-      {whatsappToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#25D366] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
-          Opened in WhatsApp ✓
-        </div>
-      )}
-
+    <div className="px-4 py-4 space-y-2.5">
+      {/* Session info card */}
       <Card>
         {isCaptain && (
           <CaptainToolbar isOpen={session.isOpen} onToggle={() => void handleToggle()} />
         )}
         <SessionHeader session={session} entries={entries} />
-        {/* Share row */}
-        <div className="flex items-center gap-2 px-4 pb-4">
-          <button
-            onClick={handleWhatsApp}
-            className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/15 border border-[#25D366]/20 py-2 rounded-xl transition-colors"
-          >
-            <WhatsAppIcon />
-            Share via WhatsApp
-          </button>
-        </div>
+
+        {/* Captain share bar */}
+        {isCaptain && (
+          <div className="flex gap-2 px-4 pb-4">
+            <button
+              onClick={handleWhatsApp}
+              className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/15 border border-[#25D366]/20 py-2 rounded-xl transition-colors"
+            >
+              <WhatsAppIcon />
+              WhatsApp
+            </button>
+            <button
+              onClick={handleCopyLink}
+              className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-[#F6E9E9]/50 bg-white/5 hover:bg-white/10 border border-white/10 py-2 rounded-xl transition-colors"
+            >
+              {copied
+                ? <><Check size={13} className="text-emerald-400" /> Copied!</>
+                : <><Share2 size={13} /> Copy link</>
+              }
+            </button>
+          </div>
+        )}
       </Card>
 
+      {/* Match result card — visible to everyone when posted */}
+      {session.result && (
+        <Card>
+          <MatchResultCard result={session.result} opponent={session.opponent} />
+        </Card>
+      )}
+
+      {/* Captain result form — only when session is closed */}
+      {isCaptain && !session.isOpen && (
+        <Card className="p-4">
+          <ResultForm
+            entries={entries}
+            existing={session.result}
+            onSave={result => setResult(session.id, result)}
+          />
+        </Card>
+      )}
+
+      {/* Player list */}
       <Card>
         <EntryList
           entries={entries}
@@ -124,6 +161,7 @@ export function SessionPage() {
         />
       </Card>
 
+      {/* Sign-in / Add entry / Status */}
       {!user ? (
         <Card className="p-5 text-center">
           <p className="text-[#F6E9E9]/60 text-sm font-medium mb-3">
@@ -148,10 +186,10 @@ export function SessionPage() {
         <Card className="px-4 py-3.5">
           <p className="text-[#F6E9E9]/30 text-sm text-center">
             {!session.isOpen
-              ? '🔒 Registration is closed'
+              ? 'Registration is closed'
               : isFull
-                ? '⚡ Session is full'
-                : '✓ You have reached your entry limit'}
+                ? 'Session is full'
+                : 'You have reached your entry limit'}
           </p>
         </Card>
       )}
