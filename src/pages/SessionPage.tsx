@@ -82,7 +82,6 @@ export function SessionPage() {
 
   function handleWhatsApp() {
     if (!session) return
-    const gkEntry = entries.find(e => e.isGK)
     const lines = [
       'VoltaList',
       '',
@@ -90,11 +89,9 @@ export function SessionPage() {
       'Date: ' + formatDate(session.date),
       'Time: ' + session.timeStart + ' - ' + session.timeEnd,
       'Venue: ' + session.venue,
-      'Players: ' + entries.length + '/' + session.maxSpots,
-      gkEntry ? 'GK: ' + gkEntry.playerName : '',
       '',
       'Sign up: ' + window.location.href,
-    ].filter(l => l !== null)
+    ]
     window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank')
   }
 
