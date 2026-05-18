@@ -44,13 +44,21 @@ export async function removeEntry(sessionId: string, entryId: string): Promise<v
 export function subscribeToUserEntries(
   uid: string,
   callback: (items: Array<{ sessionId: string; isGK: boolean }>) => void,
+  onError?: () => void,
 ): () => void {
   const q = query(collectionGroup(db, 'entries'), where('addedByUid', '==', uid))
-  return onSnapshot(q, snapshot => {
-    const items = snapshot.docs.map(d => ({
-      sessionId: d.ref.parent.parent!.id,
-      isGK: (d.data() as Entry).isGK,
-    }))
-    callback(items)
-  })
+  return onSnapshot(
+    q,
+    snapshot => {
+      const items = snapshot.docs.map(d => ({
+        sessionId: d.ref.parent.parent!.id,
+        isGK: (d.data() as Entry).isGK,
+      }))
+      callback(items)
+    },
+    err => {
+      console.error('subscribeToUserEntries error:', err)
+      onError?.()
+    },
+  )
 }

@@ -12,10 +12,14 @@ export function useUserSessions(uid: string | null) {
       setEntriesLoading(false)
       return
     }
-    return subscribeToUserEntries(uid, items => {
-      setUserEntries(items)
-      setEntriesLoading(false)
-    })
+    return subscribeToUserEntries(
+      uid,
+      items => {
+        setUserEntries(items)
+        setEntriesLoading(false)
+      },
+      () => setEntriesLoading(false),
+    )
   }, [uid])
 
   const sessionIds = new Set(userEntries.map(e => e.sessionId))
