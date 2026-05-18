@@ -1,22 +1,13 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Spinner } from '../components/ui/Spinner'
-import { EmptyState } from '../components/ui/EmptyState'
 import { LandingPage } from './LandingPage'
-import { useSessions } from '../hooks/useSession'
+import { UserHomePage } from './UserHomePage'
+import { AdminHomePage } from './AdminHomePage'
 import { useAuth } from '../hooks/useAuth'
+import { useCaptain } from '../hooks/useCaptain'
 
 export function HomePage() {
   const { user, loading: authLoading } = useAuth()
-  const { sessions, loading: sessionsLoading } = useSessions()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (sessionsLoading || sessions.length === 0) return
-    const open = sessions.find(s => s.isOpen)
-    const target = open ?? sessions[0]
-    navigate(`/session/${target.id}`, { replace: true })
-  }, [sessionsLoading, sessions, navigate])
+  const { isCaptain } = useCaptain()
 
   if (authLoading) {
     return (
@@ -28,18 +19,7 @@ export function HomePage() {
 
   if (!user) return <LandingPage />
 
-  if (sessionsLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Spinner className="w-8 h-8" />
-      </div>
-    )
-  }
+  if (isCaptain) return <AdminHomePage />
 
-  return (
-    <EmptyState
-      title="No sessions yet"
-      description="Ask the captain to create a session."
-    />
-  )
+  return <UserHomePage />
 }

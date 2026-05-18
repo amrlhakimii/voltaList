@@ -1,11 +1,13 @@
 import {
   collection,
+  collectionGroup,
   addDoc,
   deleteDoc,
   doc,
   onSnapshot,
   orderBy,
   query,
+  where,
   serverTimestamp,
 } from 'firebase/firestore'
 import { db } from './firestore'
@@ -37,4 +39,18 @@ export async function addEntry(
 
 export async function removeEntry(sessionId: string, entryId: string): Promise<void> {
   await deleteDoc(doc(db, 'sessions', sessionId, 'entries', entryId))
+}
+
+export function subscribeToUserEntries(
+  uid: string,
+  callback: (items: Array<{ sessionId: string; isGK: boolean }>) => void,
+): () => void {
+  const q = query(collectionGroup(db, 'entries'), where('addedByUid', '==', uid))
+  return onSnapshot(q, snapshot => {
+    const items = snapshot.docs.map(d => ({
+      sessionId: d.ref.parent.parent!.id,
+      isGK: (d.data() as Entry).isGK,
+    }))
+    callback(items)
+  })
 }
